@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import StartScreen from "./StartScreen";
+import QuizScreen from "./QuizScreen";
+
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+  // Tracks progress in quiz between 0 and 2
+  const [progressState, setProgress] = React.useState(0)
+
+  // Holds the array of questions and answers
+  const [questionState, setQuestions] = React.useState([])
+
+  // Boolian isLoading for api request
+  const [isLoading, setIsLoading] = React.useState([true])
+
+
+
+  function startQuiz() {
+    setProgress(1)
+    getQuestions()
+  }
+
+
+  // Get a list of 10 Questions from the Quiz API
+  function getQuestions() {
+    fetch('https://opentdb.com/api.php?amount=5&category=9&difficulty=easy&type=multiple')
+    .then(res => res.json())
+    .then(data => {
+      setQuestions(data)
+      setIsLoading(false)
+    })
+    .catch(error => console.error(error))
+  }
+
+
+    return (
+      <div className="app">
+        {progressState === 0 && <StartScreen handleClick={startQuiz} />}
+        {progressState === 1 && !isLoading && <QuizScreen questionState={questionState} progress={progressState} />}
+      </div>
+    );
 }
 
 export default App;
