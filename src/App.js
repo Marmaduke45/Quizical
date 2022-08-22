@@ -22,10 +22,18 @@ function App() {
     getQuestions()
   }
 
+  function finishQuiz() {
+    setProgress(2)
+  }
+
+  function restartQuiz() {
+    setIsLoading(true)
+    setProgress(0)
+  }
 
   // Get a list of 10 Questions from the Quiz API
   function getQuestions() {
-    fetch('https://opentdb.com/api.php?amount=5&category=9&difficulty=easy&type=multiple')
+    fetch('https://opentdb.com/api.php?amount=5&type=multiple')
     .then(res => res.json())
     .then(data => {
       setQuestions(data)
@@ -38,7 +46,7 @@ function App() {
     return (
       <div className="app">
         {progressState === 0 && <StartScreen handleClick={startQuiz} />}
-        {progressState === 1 && !isLoading && <QuizScreen questionState={questionState} progress={progressState} />}
+        {progressState > 0 && !isLoading && <QuizScreen questionState={questionState} handleRestart={restartQuiz} handleFinish={finishQuiz} progress={progressState} />}
       </div>
     );
 }
