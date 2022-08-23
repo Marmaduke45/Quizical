@@ -15,7 +15,12 @@ function App() {
   // Boolian isLoading for api request
   const [isLoading, setIsLoading] = React.useState([true])
 
+  // Holds category and difficulty of questions
+  const [difficulty, setDifficulty] = React.useState("easy")
 
+  function handleDifficulty(e){
+    setDifficulty(e.target.value)
+  }
 
   function startQuiz() {
     setProgress(1)
@@ -33,7 +38,7 @@ function App() {
 
   // Get a list of 10 Questions from the Quiz API
   function getQuestions() {
-    fetch('https://opentdb.com/api.php?amount=5&type=multiple')
+    fetch(`https://opentdb.com/api.php?amount=5&difficulty=${difficulty}&category=9&type=multiple`)
     .then(res => res.json())
     .then(data => {
       setQuestions(data)
@@ -45,7 +50,7 @@ function App() {
 
     return (
       <div className="app">
-        {progressState === 0 && <StartScreen handleClick={startQuiz} />}
+        {progressState === 0 && <StartScreen difficulty={difficulty} handleDifficulty={handleDifficulty} handleClick={startQuiz} />}
         {progressState > 0 && !isLoading && <QuizScreen questionState={questionState} handleRestart={restartQuiz} handleFinish={finishQuiz} progress={progressState} />}
       </div>
     );
